@@ -1,0 +1,101 @@
+module stride_Prefetcher(rst,clk,pc,address,prefetch_address,prefetch_valid);
+input					rst,clk;
+input 	[31:0]	pc,address;
+output	[31:0]	prefetch_address;
+output				prefetch_valid;
+reg		[31:0]	prefetch_address;
+reg					prefetch_valid;
+reg		[31:0]	pc0,pc1,pc2,pc3,pc4,pc5,pc6,pc7;
+reg		[31:0]	ad0,ad1,ad2,ad3,ad4,ad5,ad6,ad7;
+reg		[31:0]	st0,st1,st2,st3,st4,st5,st6,st7;
+wire					en;
+always @ (posedge clk or negedge rst) begin
+	if(!rst) begin
+		{pc0,pc1,pc2,pc3,pc4,pc5,pc6,pc7} <= 256'b0;
+		{ad0,ad1,ad2,ad3,ad4,ad5,ad6,ad7} <= 256'b0;
+		{st0,st1,st2,st3,st4,st5,st6,st7} <= 256'b0;
+		prefetch_valid <= 1'b0;
+	end
+	else if(en) begin
+		if(pc==pc0) begin
+			st0 <= address - ad0;
+			ad0 <= address;
+			if(address == ad0 + st0) begin
+				prefetch_address <= ad0 +st0;
+				prefetch_valid <= 1'b1;
+			end
+			else prefetch_valid <= 1'b0;
+		end
+		else if(pc == pc1) begin
+			st1 <= address - ad1;
+			ad1 <= address;
+			if(address == ad1 + sts1) begin
+				prefetch_address <= ad1 + st1;
+				prefetch_valid <= 1'b1;
+			end
+			else prefetch_valid <= 1'b0;
+		end
+		else if(pc == pc2) begin
+			st2 <= address -ad2;
+			ad2 <= address;
+			if(address == ad2 + st2) begin
+				prefetch_address <= ad2 + st2;
+				prefetch_valid <= 1'b1;
+			end
+			else prefetch_valid <= 1'b0;
+		end
+		else if(pc== pc3) begin
+			st3 <= address - ad3;
+			ad3 <= address;
+			if(address == ad3 + st3) begin
+				prefetch_address <= ad3 + st3;
+				prefetch_valid <= 1'b1;
+			end
+			else prefetch_valid <= 1'b0;
+		end
+		else if(pc == pc4) begin
+			st4 <= address - ad4;
+			ad4 <= address;
+			if(address == ad4 + st4) begin
+				prefetch_address <= ad4 + st4;
+				prefetch_valid <= 1'b1;
+			end
+			else prefetch_valid <= 1'b0;
+		end
+		else if(pc == pc5) begin
+			st5 <= address - ad5;
+			ad5 <= address;
+			if(address == ad5 + st5) begin
+				prefetch_address <= ad5 + st5;
+				prefetch_valid <= 1'b1;
+			end
+			else prefetch_valid <= 1'b0;
+		end
+		else if(pc == pc6) begin
+			st6 <= address - ad6;
+			ad6 <= address;
+			if(address == ad6 + st6) begin
+				prefetch_address <= ad6 + st6;
+				prefetch_valid <= 1'b1;
+			end
+			else prefetch_valid <= 1'b0;
+		end
+		else begin
+			st7 <= address - ad7;
+			ad7 <= address;
+			if(address == ad7 + st7) begin
+				prefetch_address <= ad7 + st7;
+				prefetch_valid <= 1'b1;
+			end
+			else prefetch_valid <= 1'b0;
+		end
+	end
+	else begin
+		{pc0, pc1, pc2, pc3, pc4, pc5, pc6, pc7} <= {pc, pc0, pc1, pc2, pc3, pc4, pc5, pc6};
+		{ad0, ad1, ad2, ad3, ad4, ad5, ad6, ad7} <= {address, ad0, ad1, ad2, ad3, ad4, ad5, ad6};
+		{st0, st1, st2, st3, st4, st5, st6, st7} <= {address, st0, st1, st2, st3, st4, st5, st6};
+		prefetch_valid <= 1'b0;
+	end
+end
+assign	en = (pc0==pc|pc1==pc|pc2==pc|pc3==pc|pc4==pc|pc5==pc|pc6==pc|pc7==pc);
+endmodule
